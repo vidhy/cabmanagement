@@ -1,19 +1,24 @@
 package com.phonepe.cabmanagement.controller;
 
-import java.time.LocalDateTime;
+import java.time.Duration;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phonepe.cabmanagement.dto.CabDto;
+import com.phonepe.cabmanagement.dto.GetIdleTimeDto;
+import com.phonepe.cabmanagement.enums.CabStatus;
+import com.phonepe.cabmanagement.exception.CabAlreadyExistsException;
+import com.phonepe.cabmanagement.exception.CityNotFoundException;
+import com.phonepe.cabmanagement.exception.InvalidStateException;
+import com.phonepe.cabmanagement.model.Cab;
 import com.phonepe.cabmanagement.service.CabService;
 
 @RestController
@@ -26,8 +31,13 @@ public class CabController {
 	// register a cab
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<Void> register(@RequestBody CabDto cabDto) {
-		cabService.create(cabDto);
-		return new ResponseEntity<>(HttpStatus.OK);
+		HttpStatus httpStatus = HttpStatus.OK;
+		try {
+			cabService.create(cabDto);
+		} catch (CabAlreadyExistsException | CityNotFoundException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<>(httpStatus);
 	}
 
 	@RequestMapping(value = "/{cabId}/location/{cityId}", method = RequestMethod.PUT)
@@ -37,12 +47,28 @@ public class CabController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/{cabId}/idletime", method = RequestMethod.GET)
-	public ResponseEntity<Void> getIdleTime(@PathVariable(value = "cabId", required = true) String cabId,
-			@RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
-			@RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-		cabService.getIdleTime(cabId, start, end);
-		return new ResponseEntity<>(HttpStatus.OK);
+	@RequestMapping(value = "/{cabId}/status/{cabStatus}", method = RequestMethod.PUT)
+	public ResponseEntity<Void> updateStatus(@PathVariable(value = "cabId", required = true) String cabId,
+			@PathVariable(value = "cabStatus", required = true) CabStatus cabStatus) {
+		HttpStatus httpstatus = HttpStatus.OK;
+		try {
+			cabService.updateStatus(cabId, cabStatus);
+		} catch (InvalidStateException e) {
+			httpstatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<>(httpstatus);
 	}
 
+	@RequestMapping(value = "/{cabId}/idletime", method = RequestMethod.POST)
+	public ResponseEntity<Duration> getIdleTime(@RequestBody GetIdleTimeDto getIdleTimeDto) {
+		Duration duration = cabService.getIdleTime(getIdleTimeDto.getCabId(), getIdleTimeDto.getStart(),
+				getIdleTimeDto.getEnd());
+		return new ResponseEntity<>(duration, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/{cabId}/history", method = RequestMethod.GET)
+	public ResponseEntity<List<Cab>> getHistory(@PathVariable String cabId) {
+		List<Cab> cabHistory = cabService.getHistory(cabId);
+		return new ResponseEntity<>(cabHistory, HttpStatus.OK);
+	}
 }

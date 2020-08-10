@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.phonepe.cabmanagement.exception.CityAlreadyExistsException;
+import com.phonepe.cabmanagement.exception.CityNotFoundException;
 import com.phonepe.cabmanagement.model.City;
 import com.phonepe.cabmanagement.repository.CityRepository;
 import com.phonepe.cabmanagement.service.CityService;
@@ -19,5 +20,18 @@ public class CityServiceImpl implements CityService {
 			throw new CityAlreadyExistsException();
 		}
 		return cityRepository.create(city);
+	}
+
+	@Override
+	public City get(String id) {
+		return cityRepository.get(id);
+	}
+
+	public boolean isValid(String cityId) {
+		City city = cityRepository.get(cityId);
+		if (city == null) {
+			throw new CityNotFoundException();
+		}
+		return true;
 	}
 }

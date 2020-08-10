@@ -1,32 +1,17 @@
 package com.phonepe.cabmanagement.repository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import org.springframework.stereotype.Repository;
+import java.util.Date;
+import java.util.List;
 
 import com.phonepe.cabmanagement.model.Trip;
 
-@Repository
-public class TripRepository {
-	Map<String, Trip> trips = new HashMap<>();
+public interface TripRepository {
 
-	public String create(Trip trip) {
-		String tripId = generateId();
-		trips.put(tripId, trip);
-		return tripId;
-	}
+	public String create(Trip trip);
 
-	public void update(Trip trip) {
-		trips.put(trip.getId(), trip);
-	}
+	public void update(Trip trip);
 
-	public Trip get(String id) {
-		return trips.get(id);
-	}
+	public Trip get(String id);
 
-	private String generateId() {
-		return Integer.toString(Math.abs(new Random().nextInt()));
-	}
+	public List<Trip> getTripsWithinRange(String cabId, Date start, Date end);
 }

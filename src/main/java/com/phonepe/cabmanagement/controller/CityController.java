@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phonepe.cabmanagement.exception.CityAlreadyExistsException;
 import com.phonepe.cabmanagement.model.City;
 import com.phonepe.cabmanagement.service.CityService;
 
@@ -20,7 +21,13 @@ public class CityController {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public ResponseEntity<Void> register(@RequestBody City city) {
-		cityService.create(city);
-		return new ResponseEntity<>(HttpStatus.OK);
+		HttpStatus httpStatus = HttpStatus.OK;
+		try {
+			cityService.create(city);
+		} catch (CityAlreadyExistsException e) {
+			httpStatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<>(httpStatus);
 	}
+
 }

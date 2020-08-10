@@ -17,7 +17,6 @@ public class Cab {
 	private String id;
 	private CabStatus status;
 	private String cityId; // null in case cab is on trip
-	private String regNumber;
 	private String modelId;
 	private Date createdAt;
 	private Date updatedAt;

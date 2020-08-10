@@ -1,11 +1,17 @@
 package com.phonepe.cabmanagement.service;
 
-import com.phonepe.cabmanagement.web.resources.TripRequest;
+import java.util.Date;
+import java.util.List;
+
+import com.phonepe.cabmanagement.dto.TripDto;
+import com.phonepe.cabmanagement.model.Trip;
 
 public interface TripService {
 
-	public TripRequest requestTrip(TripRequest tripDto);
+	public TripDto requestTrip(TripDto tripDto);
 
-	public TripRequest endTrip(String tripId);
+	public TripDto endTrip(String tripId);
+
+	public List<Trip> getTripsWithinRange(String cabId, Date start, Date end);
 
 }

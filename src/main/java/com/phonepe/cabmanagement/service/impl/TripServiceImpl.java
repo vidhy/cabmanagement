@@ -2,6 +2,7 @@ package com.phonepe.cabmanagement.service.impl;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -87,6 +88,16 @@ public class TripServiceImpl implements TripService {
 
 	public List<Trip> getTripsWithinRange(String cabId, Date start, Date end) {
 		return tripRepository.getTripsWithinRange(cabId, start, end);
+	}
+
+	@Override
+	public Map<String, Integer> getTripsGroupedByCity() {
+		return tripRepository.getTripsGroupedByCity();
+	}
+
+	@Override
+	public Map<Integer, Integer> getTripsGroupedByHour() {
+		return tripRepository.getTripsGroupedByHour();
 	}
 
 }

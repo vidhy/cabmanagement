@@ -22,4 +22,9 @@ public class CabHistoryRepositoryImpl implements CabHistoryRepository {
 		cabHistrory.putIfAbsent(copiedBean.getId(), new ArrayList<Cab>());
 		cabHistrory.get(copiedBean.getId()).add(copiedBean);
 	}
+
+	@Override
+	public List<Cab> get(String cabId) {
+		return cabHistrory.get(cabId);
+	}
 }

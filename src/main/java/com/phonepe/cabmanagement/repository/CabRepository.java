@@ -14,4 +14,5 @@ public interface CabRepository {
 	public Cab get(String id);
 
 	public List<Cab> getCabs(String cityId, CabStatus status);
+	
 }

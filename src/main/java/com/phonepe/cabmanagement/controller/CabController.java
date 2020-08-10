@@ -1,6 +1,7 @@
 package com.phonepe.cabmanagement.controller;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.phonepe.cabmanagement.dto.CabDto;
 import com.phonepe.cabmanagement.dto.GetIdleTimeDto;
 import com.phonepe.cabmanagement.enums.CabStatus;
 import com.phonepe.cabmanagement.exception.CabAlreadyExistsException;
+import com.phonepe.cabmanagement.exception.CabNotFoundException;
 import com.phonepe.cabmanagement.exception.CityNotFoundException;
 import com.phonepe.cabmanagement.exception.InvalidStateException;
 import com.phonepe.cabmanagement.model.Cab;
@@ -43,8 +45,13 @@ public class CabController {
 	@RequestMapping(value = "/{cabId}/location/{cityId}", method = RequestMethod.PUT)
 	public ResponseEntity<Void> updateLocation(@PathVariable(value = "cabId", required = true) String cabId,
 			@PathVariable(value = "cityId", required = true) String cityId) {
-		cabService.updateLocation(cabId, cityId);
-		return new ResponseEntity<>(HttpStatus.OK);
+		HttpStatus httpstatus = HttpStatus.OK;
+		try {
+			cabService.updateLocation(cabId, cityId);
+		} catch (CabNotFoundException | CityNotFoundException e) {
+			httpstatus = HttpStatus.BAD_REQUEST;
+		}
+		return new ResponseEntity<>(httpstatus);
 	}
 
 	@RequestMapping(value = "/{cabId}/status/{cabStatus}", method = RequestMethod.PUT)
@@ -68,7 +75,13 @@ public class CabController {
 
 	@RequestMapping(value = "/{cabId}/history", method = RequestMethod.GET)
 	public ResponseEntity<List<Cab>> getHistory(@PathVariable String cabId) {
-		List<Cab> cabHistory = cabService.getHistory(cabId);
-		return new ResponseEntity<>(cabHistory, HttpStatus.OK);
+		HttpStatus httpStatus = HttpStatus.OK;
+		List<Cab> cabHistory = new ArrayList<Cab>();
+		try {
+			cabHistory = cabService.getHistory(cabId);
+		} catch (CabNotFoundException e) {
+			httpStatus = HttpStatus.NOT_FOUND;
+		}
+		return new ResponseEntity<>(cabHistory, httpStatus);
 	}
 }

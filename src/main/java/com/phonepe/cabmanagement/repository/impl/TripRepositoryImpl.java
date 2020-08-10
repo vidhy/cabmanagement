@@ -42,4 +42,26 @@ public class TripRepositoryImpl implements TripRepository {
 				&& (t.getStartTime().compareTo(end) > 0)).collect(Collectors.toList());
 		return resultTrips;
 	}
+
+	@Override
+	public Map<String, Integer> getTripsGroupedByCity() {
+		Map<String, Integer> result = new HashMap<>();
+		for (Trip trip : trips.values()) {
+			result.putIfAbsent(trip.getFromCityId(), 0);
+			result.put(trip.getFromCityId(), result.get(trip.getFromCityId()) + 1);
+		}
+		return result;
+	}
+
+	@Override
+	public Map<Integer, Integer> getTripsGroupedByHour() {
+		Map<Integer, Integer> result = new HashMap<>();
+		// for (Trip trip : trips.values()) {
+		// result.putIfAbsent(trip.getFromCityId(), 0);
+		// result.put(trip.getFromCityId(), result.get(trip.getFromCityId()) +
+		// 1);
+		// }
+		return result;
+	}
+
 }

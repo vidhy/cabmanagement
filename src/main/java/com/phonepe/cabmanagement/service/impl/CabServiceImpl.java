@@ -2,6 +2,7 @@ package com.phonepe.cabmanagement.service.impl;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -119,7 +120,11 @@ public class CabServiceImpl implements CabService {
 
 	@Override
 	public List<Cab> getHistory(String cabId) {
-		return cabRepository.get(cabId);
+		List<Cab> cabHistory = cabHistoryRepository.get(cabId);
+		if (cabHistory == null) {
+			throw new CabNotFoundException();
+		}
+		return cabHistory;
 	}
 
 }

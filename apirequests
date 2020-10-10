@@ -1,0 +1,36 @@
+
+
+
+ONboard cities
+curl -v -X POST localhost:8080/v1/city/ -d '{"id":"HYD"}' -H 'Content-Type: application/json'
+curl -v -X POST localhost:8080/v1/city/ -d '{"id":"BLR"}' -H 'Content-Type: application/json'
+curl -v -X POST localhost:8080/v1/city/ -d '{"id":"MUM"}' -H 'Content-Type: application/json'
+
+Register cabs
+curl -v -X POST localhost:8080/v1/cab/ -d '{"cityId":"HYD","id":"123"}' -H 'Content-Type: application/json'
+curl -v -X POST localhost:8080/v1/cab/ -d '{"cityId":"BLR","id":"456"}' -H 'Content-Type: application/json'
+curl -v -X POST localhost:8080/v1/cab/ -d '{"cityId":"HYD","id":"789"}' -H 'Content-Type: application/json'
+
+
+Update City of cab
+curl -v -X PUT localhost:8080/v1/cab/123/location/BLR -d '' -H 'Content-Type: application/json'
+
+Update Status of cab
+curl -v -X PUT localhost:8080/v1/cab/123/status/AVAILABLE -d '' -H 'Content-Type: application/json'
+
+Create Trip
+curl -v -X POST localhost:8080/v1/trip/ -d '{"fromCityId":"HYD","toCityId":"BLR"}' -H 'Content-Type: application/json'
+
+End Trip
+curl -v -X POST localhost:8080/v1/trip/1595726249/end -d '' -H 'Content-Type: application/json'
+
+Get History
+curl -v localhost:8080/v1/cab/123/history  -H 'Content-Type: application/json'
+
+Get idle time
+curl -v -X POST localhost:8080/v1/cab/456/idletime -d '{"end":"2020-08-09T01:30:00.000-05:00","start":"2020-08-10T01:30:00.000-05:00"}' -H 'Content-Type: application/json'
+
+GET grouped by city
+curl -v localhost:8080/v1/trip/group/cityId  -H 'Content-Type: application/json'
+
+
